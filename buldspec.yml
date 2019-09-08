@@ -1,0 +1,20 @@
+version: 0.2
+
+
+phases:
+  install:
+    runtime-versions:
+      java: openjdk8
+  build:
+    commands:
+      - echo "Building image..."
+      - docker-compose build "$TARGET_NAME"
+      - docker tag "$TARGET_NAME" "$IMAGE_RELASE_TAG_URI"
+      - docker tag "$TARGET_NAME" "$IMAGE_LATEST_TAG_URI"
+      - echo "Pushing image..."
+      - docker push "$IMAGE_RELASE_TAG_URI"
+      - docker push "$IMAGE_LATEST_TAG_URI"
+      - printf '[{"name":"%s","imageUri":"%s"}]' "$CONTAINER_NAME" "$IMAGE_RELASE_TAG_URI" > build.json
+
+artifacts:
+  files: build.json
